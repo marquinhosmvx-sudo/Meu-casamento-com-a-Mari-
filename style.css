@@ -1,0 +1,11 @@
+body{margin:0;font-family:'Cormorant Garamond',serif;background:#f7f4ef;color:#3b3b3b}
+.hero{background:linear-gradient(rgba(0,0,0,0.2),rgba(0,0,0,0.2)),url('https://images.unsplash.com/photo-1506744038136-46273834b3fb')center/cover;height:80vh;display:flex;flex-direction:column;justify-content:center;align-items:center;color:white;text-align:center}
+.title{font-size:3rem}
+section{text-align:center;padding:40px}
+h2{color:#3a4f7a;font-size:2rem}
+#countdown{display:flex;justify-content:center;gap:20px}
+#countdown div{background:#fff;padding:20px;border-radius:10px}
+iframe{width:90%;height:250px;border:none}
+.btn{background:#a3bce2;color:white;padding:12px 20px;border-radius:8px;text-decoration:none}
+form input,form textarea{width:80%;padding:10px;margin:8px;border-radius:6px;border:1px solid #ccc}
+form button{background:#3a4f7a;color:white;padding:12px 20px;border:none;border-radius:8px}

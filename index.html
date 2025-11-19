@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Casamento Marcos & Marieli</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="script.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
+</head>
+<body>
+<header class="hero">
+    <h1 class="title">Marcos Antônio & Marieli Correa</h1>
+    <p class="date">16 de Maio de 2026 • 14h15</p>
+</header>
+<section class="countdown-section">
+    <h2>Contagem Regressiva</h2>
+    <div id="countdown">
+        <div><span id="days"></span><p>Dias</p></div>
+        <div><span id="hours"></span><p>Horas</p></div>
+        <div><span id="minutes"></span><p>Min</p></div>
+        <div><span id="seconds"></span><p>Seg</p></div>
+    </div>
+</section>
+<section class="story">
+    <h2>Nossa História</h2>
+    <p>Marcos e Marieli viveram um encontro que parecia destino...</p>
+</section>
+<section class="location">
+    <h2>Cerimônia</h2>
+    <p><strong>Data:</strong> 16/05/2026 às 14h15</p>
+    <p><strong>Endereço:</strong> Av. Planalto, 502-586 - Cidade Jardim Marilia, Luziânia - GO</p>
+    <iframe src="https://www.google.com/maps?q=Av.+Planalto,+502-586,+Luziânia+GO&output=embed"></iframe>
+</section>
+<section class="location">
+    <h2>Recepção</h2>
+    <p><strong>Endereço:</strong> R3VF+PC Parque Industrial Mingone, Luziânia - GO</p>
+    <iframe src="https://www.google.com/maps?q=R3VF%2BPC+Luziânia+GO&output=embed"></iframe>
+</section>
+<section class="dresscode">
+    <h2>Dress Code</h2>
+    <p>Traje social com tons suaves e rústicos.</p>
+</section>
+<section class="gifts">
+    <h2>Lista de Presentes</h2>
+    <ul class="gift-list">
+        <li><a href="#">Jogo de panelas</a></li>
+        <li><a href="#">Aspirador de pó</a></li>
+    </ul>
+</section>
+<section class="pix">
+    <h2>Presente via PIX</h2>
+    <p><strong>Chave:</strong> 04314159197</p>
+    <canvas id="qrcode"></canvas>
+</section>
+<section class="album">
+    <h2>Álbum do Casamento</h2>
+    <a class="btn" href="#">Enviar fotos 📤</a>
+    <a class="btn" href="#">Ver álbum 📸</a>
+</section>
+<section class="rsvp">
+    <h2>Confirmação de Presença</h2>
+    <form id="rsvpForm">
+        <input type="text" name="name" placeholder="Seu nome" required>
+        <input type="number" name="guests" placeholder="Quantidade de acompanhantes" required>
+        <input type="email" name="email" placeholder="Seu e-mail" required>
+        <textarea name="message" placeholder="Mensagem (opcional)"></textarea>
+        <button type="submit">Confirmar Presença</button>
+    </form>
+    <p id="rsvpMessage"></p>
+</section>
+<footer>
+    <p>Site feito com carinho para o casamento de Marcos & Marieli 💙</p>
+</footer>
+</body>
+</html>
