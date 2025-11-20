@@ -1,0 +1,123 @@
+/*
+Apps Script Web App (substitua no seu editor Apps Script)
+Este script aceita:
+- GET ?action=getSettings -> retorna {backgroundUrl: "..."}
+- GET ?action=setBackgroundUrl&url=... -> grava Settings backgroundUrl
+- POST -> RSVPs e action=setBackground (upload via base64)
+*/
+const SHEET_ID = "18oI8wRMNWU9FDai7adAvbF1X8pyQWkdPN5TuZiMaVaA";
+const UPLOAD_FOLDER_ID = "1RhcxrDQdNX6hF_qx4mPU6Ezk05UkVDgK";
+
+function doGet(e) {
+  try {
+    var action = e.parameter.action || "";
+    if (action === "getSettings") {
+      var ss = SpreadsheetApp.openById(SHEET_ID);
+      var sheet = ss.getSheetByName("Settings");
+      var result = { backgroundUrl: "" };
+      if (sheet) {
+        var values = sheet.getRange(1,1, sheet.getLastRow(), 2).getValues();
+        for (var i=0;i<values.length;i++){
+          if (values[i][0] === "backgroundUrl") {
+            result.backgroundUrl = values[i][1];
+            break;
+          }
+        }
+      }
+      return ContentService.createTextOutput(JSON.stringify(result)).setMimeType(ContentService.MimeType.JSON);
+    } else if (action === "setBackgroundUrl" && e.parameter.url) {
+      setSetting("backgroundUrl", e.parameter.url);
+      return ContentService.createTextOutput(JSON.stringify({status:"success"})).setMimeType(ContentService.MimeType.JSON);
+    } else {
+      return ContentService.createTextOutput(JSON.stringify({status:'ok', message:'WebApp ativo'})).setMimeType(ContentService.MimeType.JSON);
+    }
+  } catch(err){
+    return ContentService.createTextOutput(JSON.stringify({status:'error', message: err.toString()})).setMimeType(ContentService.MimeType.JSON);
+  }
+}
+
+function doPost(e) {
+  try {
+    var contentType = e.postData.type || "";
+    var payload;
+    if (contentType.indexOf("application/json") !== -1) {
+      payload = JSON.parse(e.postData.contents);
+    } else {
+      payload = e.parameter || {};
+    }
+
+    if (payload.action === "setBackground" || (e.parameter && e.parameter.action === "setBackground")) {
+      if (payload.photoBase64 && payload.photoMimeType) {
+        var base64 = payload.photoBase64.replace(/^data:[^;]+;base64,/, "");
+        var blob = Utilities.newBlob(Utilities.base64Decode(base64), payload.photoMimeType, payload.photoFilename || ("background_" + new Date().getTime()));
+        var folder = DriveApp.getFolderById(UPLOAD_FOLDER_ID);
+        var file = folder.createFile(blob);
+        file.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW);
+        var fileUrl = file.getUrl();
+        setSetting("backgroundUrl", fileUrl);
+        return ContentService.createTextOutput(JSON.stringify({status:"success", fileUrl: fileUrl})).setMimeType(ContentService.MimeType.JSON);
+      }
+      if (e.namedBlob && e.namedBlob.photo) {
+        var blobObj = e.namedBlob.photo;
+        var folder2 = DriveApp.getFolderById(UPLOAD_FOLDER_ID);
+        var f = folder2.createFile(blobObj);
+        f.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW);
+        var url2 = f.getUrl();
+        setSetting("backgroundUrl", url2);
+        return ContentService.createTextOutput(JSON.stringify({status:"success", fileUrl: url2})).setMimeType(ContentService.MimeType.JSON);
+      }
+      return ContentService.createTextOutput(JSON.stringify({status:"error", message:"Nenhuma imagem encontrada no POST"})).setMimeType(ContentService.MimeType.JSON);
+    }
+
+    if (payload.name) {
+      var ss = SpreadsheetApp.openById(SHEET_ID);
+      var sheet = ss.getSheets()[0];
+      var fileUrl = "";
+      if (payload.photoBase64 && payload.photoMimeType) {
+        var base64 = payload.photoBase64.replace(/^data:[^;]+;base64,/, "");
+        var blobR = Utilities.newBlob(Utilities.base64Decode(base64), payload.photoMimeType, payload.photoFilename || ("foto_" + new Date().getTime()));
+        var folderR = DriveApp.getFolderById(UPLOAD_FOLDER_ID);
+        var fileR = folderR.createFile(blobR);
+        fileR.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW);
+        fileUrl = fileR.getUrl();
+      }
+      var row = [
+        new Date(),
+        payload.name || "",
+        payload.email || "",
+        payload.phone || "",
+        payload.willAttend || "",
+        payload.guests || "",
+        payload.notes || "",
+        fileUrl
+      ];
+      sheet.appendRow(row);
+      return ContentService.createTextOutput(JSON.stringify({ status: "success", fileUrl: fileUrl })).setMimeType(ContentService.MimeType.JSON);
+    }
+
+    return ContentService.createTextOutput(JSON.stringify({status:'error', message:'Payload inválido'})).setMimeType(ContentService.MimeType.JSON);
+
+  } catch (err) {
+    return ContentService.createTextOutput(JSON.stringify({ status: "error", message: err.toString() })).setMimeType(ContentService.MimeType.JSON);
+  }
+}
+
+function setSetting(key, value) {
+  var ss = SpreadsheetApp.openById(SHEET_ID);
+  var sheet = ss.getSheetByName("Settings");
+  if (!sheet) {
+    sheet = ss.insertSheet("Settings");
+  }
+  var data = sheet.getRange(1,1, sheet.getLastRow(), 2).getValues();
+  var found = false;
+  for (var i=0;i<data.length;i++){
+    if (data[i][0] === key) {
+      sheet.getRange(i+1,2).setValue(value);
+      found = true;
+      break;
+    }
+  }
+  if (!found) {
+    sheet.appendRow([key, value]);
+  }
+}

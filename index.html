@@ -1,76 +1,155 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Casamento Marcos & Marieli</title>
-    <link rel="stylesheet" href="style.css">
-    <script src="script.js" defer></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Casamento Marcos & Marieli</title>
+  <!-- Fontes elegantes -->
+  <link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;500;600&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
 </head>
+
 <body>
-<header class="hero">
-    <h1 class="title">Marcos Antônio & Marieli Correa</h1>
-    <p class="date">16 de Maio de 2026 • 14h15</p>
-</header>
-<section class="countdown-section">
-    <h2>Contagem Regressiva</h2>
-    <div id="countdown">
-        <div><span id="days"></span><p>Dias</p></div>
-        <div><span id="hours"></span><p>Horas</p></div>
-        <div><span id="minutes"></span><p>Min</p></div>
-        <div><span id="seconds"></span><p>Seg</p></div>
-    </div>
-</section>
-<section class="story">
+  <!-- HEADER -->
+  <header>
+    <h1>Marcos Antônio & Marieli Corrêa</h1>
+    <p>16 de Maio de 2026 • 14h15</p>
+  </header>
+
+  <!-- MENU -->
+  <nav>
+    <a href="#sobre">Sobre Nós</a>
+    <a href="#cerimonia">Cerimônia</a>
+    <a href="#rsvp">RSVP + Foto</a>
+    <a href="#presentes">Presentes</a>
+    <a href="#album">Álbum</a>
+  </nav>
+
+  <!-- SOBRE -->
+  <section id="sobre">
     <h2>Nossa História</h2>
-    <p>Marcos e Marieli viveram um encontro que parecia destino...</p>
-</section>
-<section class="location">
-    <h2>Cerimônia</h2>
-    <p><strong>Data:</strong> 16/05/2026 às 14h15</p>
-    <p><strong>Endereço:</strong> Av. Planalto, 502-586 - Cidade Jardim Marilia, Luziânia - GO</p>
-    <iframe src="https://www.google.com/maps?q=Av.+Planalto,+502-586,+Luziânia+GO&output=embed"></iframe>
-</section>
-<section class="location">
-    <h2>Recepção</h2>
-    <p><strong>Endereço:</strong> R3VF+PC Parque Industrial Mingone, Luziânia - GO</p>
-    <iframe src="https://www.google.com/maps?q=R3VF%2BPC+Luziânia+GO&output=embed"></iframe>
-</section>
-<section class="dresscode">
-    <h2>Dress Code</h2>
-    <p>Traje social com tons suaves e rústicos.</p>
-</section>
-<section class="gifts">
-    <h2>Lista de Presentes</h2>
-    <ul class="gift-list">
-        <li><a href="#">Jogo de panelas</a></li>
-        <li><a href="#">Aspirador de pó</a></li>
-    </ul>
-</section>
-<section class="pix">
-    <h2>Presente via PIX</h2>
-    <p><strong>Chave:</strong> 04314159197</p>
-    <canvas id="qrcode"></canvas>
-</section>
-<section class="album">
-    <h2>Álbum do Casamento</h2>
-    <a class="btn" href="#">Enviar fotos 📤</a>
-    <a class="btn" href="#">Ver álbum 📸</a>
-</section>
-<section class="rsvp">
-    <h2>Confirmação de Presença</h2>
-    <form id="rsvpForm">
-        <input type="text" name="name" placeholder="Seu nome" required>
-        <input type="number" name="guests" placeholder="Quantidade de acompanhantes" required>
-        <input type="email" name="email" placeholder="Seu e-mail" required>
-        <textarea name="message" placeholder="Mensagem (opcional)"></textarea>
-        <button type="submit">Confirmar Presença</button>
+    <p>
+      Com imensa alegria, convidamos você para celebrar conosco este dia tão especial.
+      Cada momento da nossa história foi construído com amor, companheirismo e fé —
+      e agora, queremos compartilhar este capítulo tão importante com você.
+    </p>
+  </section>
+
+  <!-- CERIMÔNIA -->
+  <section id="cerimonia">
+    <h2>Cerimônia & Recepção</h2>
+
+    <p><strong>📅 Data:</strong> 16/05/2026</p>
+    <p><strong>⏰ Horário:</strong> 14h15</p>
+
+    <p><strong>📍 Local da Cerimônia:</strong><br>
+    Av. Planalto, 502-586 — Cidade Jardim Marília, Luziânia — GO</p>
+
+    <p><strong>🎉 Local da Recepção:</strong><br>
+    R3VF+PC Parque Industrial Mingone, Luziânia — GO</p>
+  </section>
+
+  <!-- RSVP -->
+  <section id="rsvp">
+    <h2>Confirmação de Presença + Foto</h2>
+
+    <p>
+      Para tornar tudo ainda mais especial, envie também uma foto sua ou da família 💕  
+      Ela será adicionada ao álbum do casamento.
+    </p>
+
+    <form id="rsvpForm" enctype="multipart/form-data">
+      <input type="text" id="name" placeholder="Nome completo" required />
+      <input type="email" id="email" placeholder="E-mail" required />
+      <input type="tel" id="phone" placeholder="Telefone" required />
+
+      <label for="willAttend">Vai comparecer?</label>
+      <select id="willAttend" required>
+        <option value="Sim">Sim</option>
+        <option value="Não">Não</option>
+      </select>
+
+      <input type="number" id="guests" min="0" value="0" placeholder="Número de acompanhantes" required />
+
+      <textarea id="notes" placeholder="Observações (opcional)"></textarea>
+
+      <label for="photo">Foto da família ou individual:</label>
+      <input type="file" id="photo" accept="image/*" required />
+
+      <button type="submit">Enviar Confirmação</button>
     </form>
+
     <p id="rsvpMessage"></p>
-</section>
-<footer>
-    <p>Site feito com carinho para o casamento de Marcos & Marieli 💙</p>
-</footer>
+  </section>
+
+  <!-- ADMIN (apenas para você) -->
+  <section id="admin" style="max-width:800px;margin:40px auto;padding:20px;border-radius:8px;background:#fff7ea;">
+    <h2>Admin — Personalizar Fundo</h2>
+
+    <p>Protegido por uma chave simples. Defina uma chave e use-a para desbloquear o painel.</p>
+
+    <label>Chave Admin:</label>
+    <input type="password" id="adminKey" placeholder="Digite a chave de admin" />
+
+    <button id="adminUnlock">Desbloquear</button>
+
+    <div id="adminPanel" style="display:none;margin-top:20px;">
+      <p><strong>1)</strong> Enviar imagem do seu computador (será salva no álbum):</p>
+      <input type="file" id="bgFile" accept="image/*" />
+      <button id="uploadBgBtn">Enviar imagem de fundo</button>
+
+      <hr>
+
+      <p><strong>2)</strong> Ou cole um <em>URL</em> direto de imagem pública:</p>
+      <input type="text" id="bgUrl" placeholder="https://.../imagem.jpg" style="width:100%" />
+      <button id="setBgUrlBtn">Aplicar URL como fundo</button>
+
+      <p style="margin-top:12px;color:#666;font-size:0.95rem;">
+        Atenção: se usar upload, a imagem será armazenada na pasta do álbum e ficará disponível por link público.
+      </p>
+    </div>
+
+    <p id="adminMsg" style="margin-top:12px;color:green"></p>
+  </section>
+
+  <!-- PRESENTES -->
+  <section id="presentes">
+    <h2>Lista de Presentes</h2>
+
+    <p>Se preferir, você também pode abençoar nosso lar através de: 💙</p>
+
+    <p style="font-size: 1.3rem; font-weight: 600; color: #2a4d69;">
+      PIX: 04314159197
+    </p>
+
+    <ul>
+      <li>Jogo de Panelas</li>
+      <li>Liquidificador</li>
+      <li>Aspirador de pó</li>
+      <li>Kit de toalhas</li>
+      <li>Utensílios para cozinha</li>
+      <li>Itens de decoração</li>
+    </ul>
+  </section>
+
+  <!-- ÁLBUM -->
+  <section id="album">
+    <h2>Álbum de Fotos</h2>
+    <p>Veja ou envie fotos do casamento através do link abaixo:</p>
+
+    <a
+      class="albumButton"
+      href="https://drive.google.com/drive/folders/1RhcxrDQdNX6hF_qx4mPU6Ezk05UkVDgK"
+      target="_blank">
+      Abrir Álbum de Fotos
+    </a>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <p>Com carinho, Marcos & Marieli — 2026</p>
+  </footer>
+
+  <script src="script.js"></script>
 </body>
 </html>

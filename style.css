@@ -1,11 +1,116 @@
-body{margin:0;font-family:'Cormorant Garamond',serif;background:#f7f4ef;color:#3b3b3b}
-.hero{background:linear-gradient(rgba(0,0,0,0.2),rgba(0,0,0,0.2)),url('https://images.unsplash.com/photo-1506744038136-46273834b3fb')center/cover;height:80vh;display:flex;flex-direction:column;justify-content:center;align-items:center;color:white;text-align:center}
-.title{font-size:3rem}
-section{text-align:center;padding:40px}
-h2{color:#3a4f7a;font-size:2rem}
-#countdown{display:flex;justify-content:center;gap:20px}
-#countdown div{background:#fff;padding:20px;border-radius:10px}
-iframe{width:90%;height:250px;border:none}
-.btn{background:#a3bce2;color:white;padding:12px 20px;border-radius:8px;text-decoration:none}
-form input,form textarea{width:80%;padding:10px;margin:8px;border-radius:6px;border:1px solid #ccc}
-form button{background:#3a4f7a;color:white;padding:12px 20px;border:none;border-radius:8px}
+:root {
+  --hero-bg-url: none;
+}
+
+@import url('https://fonts.googleapis.com/css2?family=Lora:wght@400;500;600&family=Playfair+Display:wght@400;500;600;700&display=swap');
+
+body {
+  margin: 0;
+  font-family: "Lora", serif;
+  background-color: #f8f5f0;
+  color: #333333;
+  line-height: 1.6;
+}
+
+header {
+  background-image: var(--hero-bg-url);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-color: #dce6f2;
+  padding: 60px 20px;
+  text-align: center;
+  color: #2a4d69;
+}
+
+header h1 {
+  margin: 0;
+  font-family: "Playfair Display", serif;
+  font-size: 3rem;
+  font-weight: 600;
+  letter-spacing: 1px;
+}
+
+header p {
+  margin-top: 10px;
+  font-size: 1.25rem;
+  font-weight: 500;
+}
+
+nav {
+  background-color: #e3d3b6;
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+  padding: 14px 0;
+}
+
+nav a {
+  color: #2a4d69;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 1.05rem;
+  font-family: "Lora", serif;
+}
+
+section {
+  padding: 50px 20px;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+h2 {
+  font-family: "Playfair Display", serif;
+  font-size: 2.2rem;
+  color: #2a4d69;
+  margin-bottom: 25px;
+}
+
+#rsvpForm input,
+#rsvpForm select,
+#rsvpForm textarea {
+  width: 100%;
+  padding: 14px;
+  margin-top: 12px;
+  border-radius: 6px;
+  border: 1px solid #b9b9b9;
+  font-size: 16px;
+  font-family: "Lora", serif;
+}
+
+#rsvpForm button {
+  margin-top: 25px;
+  width: 100%;
+  padding: 16px;
+  background-color: #2a4d69;
+  color: #ffffff;
+  border: none;
+  border-radius: 6px;
+  font-size: 1.2rem;
+  font-family: "Playfair Display", serif;
+  cursor: pointer;
+  letter-spacing: 0.5px;
+}
+
+#rsvpForm button:hover {
+  background-color: #1e364b;
+}
+
+.albumButton {
+  display: inline-block;
+  padding: 14px 24px;
+  background-color: #2a4d69;
+  color: #ffffff;
+  border-radius: 6px;
+  text-decoration: none;
+  font-size: 1.2rem;
+  font-family: "Playfair Display", serif;
+}
+
+footer {
+  background-color: #dce6f2;
+  text-align: center;
+  padding: 25px 0;
+  margin-top: 60px;
+  font-family: "Lora", serif;
+}
