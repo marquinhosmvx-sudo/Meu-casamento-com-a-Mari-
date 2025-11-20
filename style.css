@@ -20,38 +20,26 @@ header {
   background-position: center;
   background-repeat: no-repeat;
   background-color: #dce6f2;
-  padding: 60px 20px;
+  padding: 40px 20px;
   text-align: center;
   color: #2a4d69;
 }
 
-header h1 { margin: 0; font-family: "Playfair Display", serif; font-size: 3rem; }
-header p { margin-top: 10px; font-size: 1.1rem; font-weight: 500; }
+header h1 { margin: 0; font-family: "Playfair Display", serif; font-size: 2.4rem; }
+header p { margin-top: 10px; font-size: 1rem; font-weight: 500; }
 
-nav { background-color: #e3d3b6; display:flex; justify-content:center; gap:20px; padding:12px 10px; position:sticky; top:0; z-index:5; }
-nav a { color:#2a4d69; text-decoration:none; font-weight:600; font-family:"Lora", serif; }
+nav { background-color: #e3d3b6; display:flex; justify-content:center; gap:12px; padding:10px 8px; position:sticky; top:0; z-index:5; }
+nav a { color:#2a4d69; text-decoration:none; font-weight:600; font-family:"Lora", serif; font-size:0.95rem; }
 
 main { max-width:1000px; margin:20px auto; padding:0 16px; }
 
-section { padding:30px 0; border-bottom: 1px solid rgba(0,0,0,0.04); }
-
-.bigConfirmButton {
-  display:inline-block;
-  padding:14px 28px;
-  background:#2a4d69;
-  color:white;
-  text-decoration:none;
-  font-family:"Playfair Display", serif;
-  border-radius:8px;
-  margin-top:20px;
-  font-size:1.2rem;
-}
+section { padding:20px 0; border-bottom: 1px solid rgba(0,0,0,0.04); }
 
 #rsvpForm input, #rsvpForm select, #rsvpForm textarea {
   width:100%; padding:12px; margin-top:10px; border-radius:6px; border:1px solid #cfcfcf; font-family:"Lora", serif;
 }
 
-#rsvpForm button { margin-top:14px; padding:14px; width:100%; border-radius:6px; background:#2a4d69; color:white; border:none; font-family:"Playfair Display", serif; font-size:1rem; cursor:pointer; }
+#rsvpForm button { margin-top:14px; padding:12px; width:100%; border-radius:6px; background:#2a4d69; color:white; border:none; font-family:"Playfair Display", serif; font-size:1rem; cursor:pointer; }
 
 .album-buttons { display:flex; gap:12px; margin-top:12px; }
 .albumButton { padding:10px 16px; background:#2a4d69; color:white; border-radius:6px; text-decoration:none; }

@@ -23,22 +23,24 @@ async function loadSettings() {
 }
 loadSettings();
 
-// Admin icon open modal with key prompt
+// Admin icon open modal with key prompt (if adminIcon exists)
 const adminIcon = document.getElementById('adminIcon');
-const adminModal = document.getElementById('adminModal');
-const closeAdmin = document.getElementById('closeAdmin');
-const adminMsg = document.getElementById('adminMsg');
+if (adminIcon) {
+  const adminModal = document.getElementById('adminModal');
+  const closeAdmin = document.getElementById('closeAdmin');
+  const adminMsg = document.getElementById('adminMsg');
 
-adminIcon.addEventListener('click', async () => {
-  const key = prompt("Informe a chave de admin:");
-  if (key === ADMIN_KEY) {
-    adminModal.setAttribute('aria-hidden','false');
-    adminMsg.textContent = "";
-  } else {
-    alert("Chave incorreta.");
-  }
-});
-closeAdmin.addEventListener('click', ()=> adminModal.setAttribute('aria-hidden','true'));
+  adminIcon.addEventListener('click', async () => {
+    const key = prompt("Informe a chave de admin:");
+    if (key === ADMIN_KEY) {
+      adminModal.setAttribute('aria-hidden','false');
+      adminMsg.textContent = "";
+    } else {
+      alert("Chave incorreta.");
+    }
+  });
+  closeAdmin.addEventListener('click', ()=> adminModal.setAttribute('aria-hidden','true'));
+}
 
 // helper: file->base64
 function fileToBase64(file) {
@@ -50,67 +52,80 @@ function fileToBase64(file) {
   });
 }
 
-// Upload bg
-document.getElementById('uploadBgBtn').addEventListener('click', async () => {
-  const fileInput = document.getElementById('bgFile');
-  if (!fileInput.files.length) { adminMsg.textContent = "Selecione um arquivo."; adminMsg.style.color = "red"; return; }
-  const file = fileInput.files[0];
-  if (file.size > 10*1024*1024) { adminMsg.textContent = "Máx 10MB."; adminMsg.style.color="red"; return; }
-  adminMsg.textContent = "Enviando...";
-  try {
-    const dataUrl = await fileToBase64(file);
-    const payload = { action: "setBackground", photoBase64: dataUrl, photoMimeType: file.type, photoFilename: `background_${Date.now()}.${file.type.split('/')[1]}` };
-    const r = await fetch(APPS_SCRIPT_URL, { method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify(payload) });
-    const j = await r.json();
-    if (j.status==="success") { applyBackground(j.fileUrl); adminMsg.textContent = "Fundo atualizado!"; adminMsg.style.color="green"; } else { adminMsg.textContent = "Erro: "+(j.message||""); adminMsg.style.color="red"; }
-  } catch (err) { adminMsg.textContent="Erro no upload."; adminMsg.style.color="red"; console.error(err); }
-});
+// Upload bg (if elements exist)
+const uploadBtn = document.getElementById('uploadBgBtn');
+if (uploadBtn) {
+  uploadBtn.addEventListener('click', async () => {
+    const fileInput = document.getElementById('bgFile');
+    const adminMsg = document.getElementById('adminMsg');
+    if (!fileInput.files.length) { adminMsg.textContent = "Selecione um arquivo."; adminMsg.style.color = "red"; return; }
+    const file = fileInput.files[0];
+    if (file.size > 10*1024*1024) { adminMsg.textContent = "Máx 10MB."; adminMsg.style.color="red"; return; }
+    adminMsg.textContent = "Enviando...";
+    try {
+      const dataUrl = await fileToBase64(file);
+      const payload = { action: "setBackground", photoBase64: dataUrl, photoMimeType: file.type, photoFilename: `background_${Date.now()}.${file.type.split('/')[1]}` };
+      const r = await fetch(APPS_SCRIPT_URL, { method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify(payload) });
+      const j = await r.json();
+      if (j.status==="success") { applyBackground(j.fileUrl); adminMsg.textContent = "Fundo atualizado!"; adminMsg.style.color="green"; } else { adminMsg.textContent = "Erro: "+(j.message||""); adminMsg.style.color="red"; }
+    } catch (err) { adminMsg.textContent="Erro no upload."; adminMsg.style.color="red"; console.error(err); }
+  });
+}
 
-// Set Bg by URL
-document.getElementById('setBgUrlBtn').addEventListener('click', async () => {
-  const url = document.getElementById('bgUrl').value.trim();
-  if (!url) { adminMsg.textContent="Cole a URL."; adminMsg.style.color="red"; return; }
-  try {
-    const r = await fetch(APPS_SCRIPT_URL + "?action=setBackgroundUrl&url=" + encodeURIComponent(url));
-    const j = await r.json();
-    if (j.status==="success") { applyBackground(url); adminMsg.textContent = "Fundo salvo!"; adminMsg.style.color="green"; }
-    else { applyBackground(url); adminMsg.textContent="Aplicado localmente."; adminMsg.style.color="orange"; }
-  } catch(err){ applyBackground(url); adminMsg.textContent="Aplicado localmente."; adminMsg.style.color="orange"; }
-});
+// Set Bg by URL (if element exists)
+const setBgBtn = document.getElementById('setBgUrlBtn');
+if (setBgBtn) {
+  setBgBtn.addEventListener('click', async () => {
+    const urlInput = document.getElementById('bgUrl');
+    const adminMsg = document.getElementById('adminMsg');
+    const url = urlInput.value.trim();
+    if (!url) { adminMsg.textContent="Cole a URL."; adminMsg.style.color="red"; return; }
+    try {
+      const r = await fetch(APPS_SCRIPT_URL + "?action=setBackgroundUrl&url=" + encodeURIComponent(url));
+      const j = await r.json();
+      if (j.status==="success") { applyBackground(url); adminMsg.textContent = "Fundo salvo!"; adminMsg.style.color="green"; }
+      else { applyBackground(url); adminMsg.textContent="Aplicado localmente."; adminMsg.style.color="orange"; }
+    } catch(err){ applyBackground(url); adminMsg.textContent="Aplicado localmente."; adminMsg.style.color="orange"; }
+  });
+}
 
-// RSVP handler (no-photo option, uses 'notes' field for message)
-document.getElementById('rsvpForm').addEventListener('submit', async (e) => {
-  e.preventDefault();
-  const msg = document.getElementById('rsvpMessage'); msg.textContent = "Enviando...";
-  try {
-    const payload = {
-      name: document.getElementById('name').value,
-      email: document.getElementById('email').value,
-      phone: document.getElementById('phone').value,
-      willAttend: document.getElementById('willAttend').value,
-      guests: document.getElementById('guests').value,
-      notes: document.getElementById('messageToCouple').value
-    };
-    const res = await fetch(APPS_SCRIPT_URL, { method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify(payload) });
-    const j = await res.json();
-    if (j.status==="success") { msg.textContent="Presença registrada! Obrigado 💙"; e.target.reset(); } else { msg.textContent="Erro: "+(j.message||""); }
-  } catch(err){ console.error(err); msg.textContent="Erro ao enviar."; }
-});
+// RSVP handler (works on confirm.html or index if present)
+const rsvpForm = document.getElementById('rsvpForm');
+if (rsvpForm) {
+  rsvpForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const msg = document.getElementById('rsvpMessage');
+    if (msg) msg.textContent = "Enviando...";
+    try {
+      const payload = {
+        name: document.getElementById('name').value,
+        email: document.getElementById('email').value,
+        phone: document.getElementById('phone').value,
+        willAttend: document.getElementById('willAttend').value,
+        guests: document.getElementById('guests').value,
+        notes: document.getElementById('messageToCouple') ? document.getElementById('messageToCouple').value : (document.getElementById('messageToCouple') ? document.getElementById('messageToCouple').value : "")
+      };
+      const res = await fetch(APPS_SCRIPT_URL, { method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify(payload) });
+      const j = await res.json();
+      if (j.status==="success") { if (msg) msg.textContent="Presença registrada! Obrigado 💙"; rsvpForm.reset(); } else { if (msg) msg.textContent="Erro: "+(j.message||""); }
+    } catch(err){ console.error(err); if (msg) msg.textContent="Erro ao enviar."; }
+  });
+}
 
-// Album buttons
+// Album buttons (set links)
 const uploadPhotosBtn = document.getElementById('uploadPhotosBtn');
 const viewAlbumBtn = document.getElementById('viewAlbumBtn');
-// Google Form (view) for uploads (edit URL to your form if needed)
-uploadPhotosBtn.href = "https://docs.google.com/forms/d/1CrVJH2dAqkIYxLiQpWXlu73ZV643OP-EdZIyc2PYHMw/viewform";
-viewAlbumBtn.href = "https://drive.google.com/drive/folders/1RhcxrDQdNX6hF_qx4mPU6Ezk05UkVDgK";
+if (uploadPhotosBtn) uploadPhotosBtn.href = "https://docs.google.com/forms/d/1CrVJH2dAqkIYxLiQpWXlu73ZV643OP-EdZIyc2PYHMw/viewform";
+if (viewAlbumBtn) viewAlbumBtn.href = "https://drive.google.com/drive/folders/1RhcxrDQdNX6hF_qx4mPU6Ezk05UkVDgK";
 
 // GIFTS: fetch, render and reservation actions
 async function fetchGifts(){
   try {
     const resp = await fetch(APPS_SCRIPT_URL + "?action=getGifts");
     const json = await resp.json();
-    if (json.status !== "success") { document.getElementById('giftsWrapper').innerHTML='<p>Não foi possível carregar no momento.</p>'; return; }
+    if (json.status !== "success") { const gw = document.getElementById('giftsWrapper'); if (gw) gw.innerHTML='<p>Não foi possível carregar no momento.</p>'; return; }
     const wrapper = document.getElementById('giftsWrapper');
+    if (!wrapper) return;
     wrapper.innerHTML = '<div class="gifts-container"></div>';
     const container = wrapper.querySelector('.gifts-container');
     json.items.forEach(item=>{
@@ -142,6 +157,6 @@ async function fetchGifts(){
         if (j.status==="success"){ alert("Reserva cancelada."); fetchGifts(); } else { alert("Erro: "+(j.message||"")); }
       });
     });
-  } catch(err){ console.error("Erro fetchGifts:", err); document.getElementById('giftsWrapper').innerHTML='<p>Erro ao carregar presentes.</p>'; }
+  } catch(err){ console.error("Erro fetchGifts:", err); const gw = document.getElementById('giftsWrapper'); if (gw) gw.innerHTML='<p>Erro ao carregar presentes.</p>'; }
 }
 fetchGifts();

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Confirmar Presença — Marcos & Marieli</title>
+  <link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;500;600&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header>
+    <h1>Confirmar Presença</h1>
+    <p>Marcos Antônio & Marieli — 16/05/2026</p>
+  </header>
+
+  <main style="max-width:700px;margin:20px auto;padding:0 16px;">
+    <section>
+      <form id="rsvpForm" style="margin-top:18px;">
+        <input type="text" id="name" name="name" placeholder="Nome completo" required />
+        <input type="email" id="email" name="email" placeholder="E-mail" required />
+        <input type="tel" id="phone" name="phone" placeholder="Telefone (opcional)" />
+        <label for="willAttend">Vai comparecer?</label>
+        <select id="willAttend" name="willAttend" required>
+          <option value="Sim">Sim</option>
+          <option value="Não">Não</option>
+        </select>
+        <input type="number" id="guests" name="guests" min="0" value="0" placeholder="Número de acompanhantes" />
+        <textarea id="messageToCouple" name="messageToCouple" placeholder="Mensagem para os noivos (opcional)"></textarea>
+
+        <button type="submit">Confirmar presença</button>
+      </form>
+      <p id="rsvpMessage"></p>
+    </section>
+  </main>
+
+  <footer style="text-align:center;padding:20px;">
+    <p><a href="index.html">Voltar ao site</a></p>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
