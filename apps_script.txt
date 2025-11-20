@@ -1,9 +1,10 @@
 /*
 Apps Script Web App (substitua no seu editor Apps Script)
-Este script aceita:
+Aceita:
 - GET ?action=getSettings -> retorna {backgroundUrl: "..."}
 - GET ?action=setBackgroundUrl&url=... -> grava Settings backgroundUrl
-- POST -> RSVPs e action=setBackground (upload via base64)
+- GET ?action=getGifts -> retorna lista de gifts (reads from Gifts sheet)
+- POST -> RSVPs and action=setBackground (upload via base64) and action=reserve/unreserve for gifts
 */
 const SHEET_ID = "18oI8wRMNWU9FDai7adAvbF1X8pyQWkdPN5TuZiMaVaA";
 const UPLOAD_FOLDER_ID = "1RhcxrDQdNX6hF_qx4mPU6Ezk05UkVDgK";
@@ -28,6 +29,24 @@ function doGet(e) {
     } else if (action === "setBackgroundUrl" && e.parameter.url) {
       setSetting("backgroundUrl", e.parameter.url);
       return ContentService.createTextOutput(JSON.stringify({status:"success"})).setMimeType(ContentService.MimeType.JSON);
+    } else if (action === "getGifts") {
+      var ss = SpreadsheetApp.openById(SHEET_ID);
+      var sheet = ss.getSheetByName("Gifts");
+      if (!sheet) {
+        return ContentService.createTextOutput(JSON.stringify({status:"error", message:"Aba Gifts não encontrada"})).setMimeType(ContentService.MimeType.JSON);
+      }
+      var data = sheet.getDataRange().getValues();
+      var headers = data[0];
+      var items = [];
+      for (var r=1;r<data.length;r++){
+        var row = data[r];
+        var obj = {};
+        for (var c=0;c<headers.length;c++){
+          obj[headers[c]] = row[c];
+        }
+        items.push(obj);
+      }
+      return ContentService.createTextOutput(JSON.stringify({status:"success", items:items})).setMimeType(ContentService.MimeType.JSON);
     } else {
       return ContentService.createTextOutput(JSON.stringify({status:'ok', message:'WebApp ativo'})).setMimeType(ContentService.MimeType.JSON);
     }
@@ -46,7 +65,8 @@ function doPost(e) {
       payload = e.parameter || {};
     }
 
-    if (payload.action === "setBackground" || (e.parameter && e.parameter.action === "setBackground")) {
+    // background upload via base64
+    if (payload.action === "setBackground") {
       if (payload.photoBase64 && payload.photoMimeType) {
         var base64 = payload.photoBase64.replace(/^data:[^;]+;base64,/, "");
         var blob = Utilities.newBlob(Utilities.base64Decode(base64), payload.photoMimeType, payload.photoFilename || ("background_" + new Date().getTime()));
@@ -57,18 +77,50 @@ function doPost(e) {
         setSetting("backgroundUrl", fileUrl);
         return ContentService.createTextOutput(JSON.stringify({status:"success", fileUrl: fileUrl})).setMimeType(ContentService.MimeType.JSON);
       }
-      if (e.namedBlob && e.namedBlob.photo) {
-        var blobObj = e.namedBlob.photo;
-        var folder2 = DriveApp.getFolderById(UPLOAD_FOLDER_ID);
-        var f = folder2.createFile(blobObj);
-        f.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW);
-        var url2 = f.getUrl();
-        setSetting("backgroundUrl", url2);
-        return ContentService.createTextOutput(JSON.stringify({status:"success", fileUrl: url2})).setMimeType(ContentService.MimeType.JSON);
-      }
       return ContentService.createTextOutput(JSON.stringify({status:"error", message:"Nenhuma imagem encontrada no POST"})).setMimeType(ContentService.MimeType.JSON);
     }
 
+    // gifts reserve/unreserve
+    if (payload.action === "reserve" || payload.action === "unreserve") {
+      var itemId = payload.id;
+      var reserverName = payload.reserverName || "";
+      var reserverEmail = payload.reserverEmail || "";
+      var lock = LockService.getScriptLock();
+      lock.waitLock(30000);
+      try {
+        var ss = SpreadsheetApp.openById(SHEET_ID);
+        var sheet = ss.getSheetByName("Gifts");
+        if (!sheet) { lock.releaseLock(); return ContentService.createTextOutput(JSON.stringify({status:"error", message:"Aba Gifts não encontrada"})).setMimeType(ContentService.MimeType.JSON); }
+        var data = sheet.getDataRange().getValues();
+        var headers = data[0];
+        var idxId = headers.indexOf("id");
+        var idxReservedBy = headers.indexOf("reservedBy");
+        var idxReservedAt = headers.indexOf("reservedAt");
+        var rowIndex = -1;
+        for (var r=1;r<data.length;r++){
+          if (String(data[r][idxId]) === String(itemId)) { rowIndex = r+1; break; } // 1-based
+        }
+        if (rowIndex === -1) { lock.releaseLock(); return ContentService.createTextOutput(JSON.stringify({status:"error", message:"Item não encontrado"})).setMimeType(ContentService.MimeType.JSON); }
+        var reservedByVal = sheet.getRange(rowIndex, idxReservedBy+1).getValue();
+        if (payload.action === "reserve") {
+          if (reservedByVal && String(reservedByVal).trim() !== "") { lock.releaseLock(); return ContentService.createTextOutput(JSON.stringify({status:"error", message:"Item já reservado", reservedBy: reservedByVal})).setMimeType(ContentService.MimeType.JSON); }
+          sheet.getRange(rowIndex, idxReservedBy+1).setValue(reserverName + (reserverEmail ? " <"+reserverEmail+">":""));
+          sheet.getRange(rowIndex, idxReservedAt+1).setValue(new Date());
+          lock.releaseLock();
+          return ContentService.createTextOutput(JSON.stringify({status:"success", message:"Reservado"})).setMimeType(ContentService.MimeType.JSON);
+        } else {
+          sheet.getRange(rowIndex, idxReservedBy+1).setValue("");
+          sheet.getRange(rowIndex, idxReservedAt+1).setValue("");
+          lock.releaseLock();
+          return ContentService.createTextOutput(JSON.stringify({status:"success", message:"Reserva removida"})).setMimeType(ContentService.MimeType.JSON);
+        }
+      } catch(errInner) {
+        lock.releaseLock();
+        return ContentService.createTextOutput(JSON.stringify({status:"error", message:errInner.toString()})).setMimeType(ContentService.MimeType.JSON);
+      }
+    }
+
+    // RSVP handling (with photo)
     if (payload.name) {
       var ss = SpreadsheetApp.openById(SHEET_ID);
       var sheet = ss.getSheets()[0];

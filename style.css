@@ -114,3 +114,12 @@ footer {
   margin-top: 60px;
   font-family: "Lora", serif;
 }
+
+/* Gifts styles */
+.gifts-container { display:flex; flex-direction:column; gap:14px; margin-top:16px; }
+.gift-item { padding:14px; border-radius:8px; background:#fff; box-shadow:0 1px 3px rgba(0,0,0,0.06); }
+.gift-item h3 { margin:0 0 6px 0; font-family:"Playfair Display", serif; }
+.gift-item .reserved { font-weight:600; color:#2a4d69; }
+.gift-actions { margin-top:10px; }
+.gift-actions button { padding:8px 12px; border-radius:6px; border:none; cursor:pointer; background:#2a4d69; color:#fff; }
+.gift-actions button:hover { background:#1e364b; }

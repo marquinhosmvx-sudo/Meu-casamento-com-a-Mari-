@@ -101,14 +101,13 @@ document.getElementById('uploadBgBtn').addEventListener('click', async function(
   }
 });
 
-// Aplicar URL manualmente e salvar via GET setBackgroundUrl (Apps Script suporta)
+// Aplicar URL manualmente and save via Apps Script route
 document.getElementById('setBgUrlBtn').addEventListener('click', async function(){
   const url = document.getElementById('bgUrl').value.trim();
   const msg = document.getElementById('adminMsg');
   if (!url) { msg.textContent = "Cole a URL da imagem."; msg.style.color = "red"; return; }
 
   try {
-    // chama rota que grava a URL em Settings
     const res = await fetch(APPS_SCRIPT_URL + "?action=setBackgroundUrl&url=" + encodeURIComponent(url));
     const json = await res.json();
     if (json.status === "success") {
@@ -116,7 +115,6 @@ document.getElementById('setBgUrlBtn').addEventListener('click', async function(
       msg.textContent = "Fundo aplicado e salvo com sucesso!";
       msg.style.color = "green";
     } else {
-      // fallback: aplica localmente
       applyBackground(url);
       msg.textContent = "Fundo aplicado localmente (não foi possível salvar no servidor).";
       msg.style.color = "orange";
@@ -187,3 +185,78 @@ document.getElementById("rsvpForm").addEventListener("submit", async function (e
     msg.textContent = "Erro no envio. Verifique sua conexão e tente novamente.";
   }
 });
+
+// ------- GIFTS: fetch, render e ações de reserva -------
+async function fetchGifts() {
+  try {
+    const resp = await fetch(APPS_SCRIPT_URL + "?action=getGifts");
+    const json = await resp.json();
+    if (json.status !== "success") {
+      document.getElementById('presentes').innerHTML = '<h2>Lista de Presentes</h2><p>Não foi possível carregar a lista no momento.</p>';
+      return;
+    }
+    const presentSection = document.getElementById('presentes');
+    presentSection.innerHTML = '<h2>Lista de Presentes</h2><p>Escolha um item e reserve para que outras pessoas não comprem o mesmo.</p>';
+    const container = document.createElement('div');
+    container.className = 'gifts-container';
+
+    json.items.forEach(item => {
+      const reserved = item.reservedBy && String(item.reservedBy).trim() !== "";
+      const el = document.createElement('div');
+      el.className = 'gift-item';
+      el.innerHTML = `
+        <h3>${item.name}</h3>
+        <p>${item.description || ""}</p>
+        <p><a href="${item.link}" target="_blank" rel="noopener">Ir para loja</a></p>
+        <p class="reserved">${ reserved ? "Reservado por: " + item.reservedBy : "Disponível" }</p>
+        <div class="gift-actions">
+          ${ reserved ? `<button class="unreserve-btn" data-id="${item.id}">Cancelar reserva</button>` : `<button class="reserve-btn" data-id="${item.id}">Reservar</button>` }
+        </div>
+      `;
+      container.appendChild(el);
+    });
+
+    presentSection.appendChild(container);
+
+    // attach events
+    document.querySelectorAll('.reserve-btn').forEach(btn=>{
+      btn.addEventListener('click', async function(){
+        const id = this.dataset.id;
+        const name = prompt("Seu nome para reserva (será mostrado na planilha):");
+        const email = prompt("Seu e-mail (opcional):");
+        if (!name) return alert("Nome é necessário para reservar.");
+        const payload = { action: "reserve", id: id, reserverName: name, reserverEmail: email || "" };
+        const res = await fetch(APPS_SCRIPT_URL, { method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify(payload) });
+        const j = await res.json();
+        if (j.status === "success") {
+          alert("Item reservado com sucesso!");
+          fetchGifts();
+        } else {
+          alert("Erro: " + (j.message || "Não foi possível reservar"));
+        }
+      });
+    });
+
+    document.querySelectorAll('.unreserve-btn').forEach(btn=>{
+      btn.addEventListener('click', async function(){
+        const id = this.dataset.id;
+        if (!confirm("Cancelar reserva deste item?")) return;
+        const payload = { action: "unreserve", id: id };
+        const res = await fetch(APPS_SCRIPT_URL, { method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify(payload) });
+        const j = await res.json();
+        if (j.status === "success") {
+          alert("Reserva removida.");
+          fetchGifts();
+        } else {
+          alert("Erro: " + (j.message || "Não foi possível cancelar"));
+        }
+      });
+    });
+
+  } catch (err) {
+    console.error("Erro fetchGifts:", err);
+    document.getElementById('presentes').innerHTML = '<h2>Lista de Presentes</h2><p>Erro ao carregar os presentes.</p>';
+  }
+}
+
+fetchGifts();
