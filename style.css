@@ -4,12 +4,14 @@
 
 @import url('https://fonts.googleapis.com/css2?family=Lora:wght@400;500;600&family=Playfair+Display:wght@400;500;600;700&display=swap');
 
+* { box-sizing: border-box; }
 body {
   margin: 0;
   font-family: "Lora", serif;
   background-color: #f8f5f0;
   color: #333333;
   line-height: 1.6;
+  padding-bottom: 60px;
 }
 
 header {
@@ -23,103 +25,51 @@ header {
   color: #2a4d69;
 }
 
-header h1 {
-  margin: 0;
-  font-family: "Playfair Display", serif;
-  font-size: 3rem;
-  font-weight: 600;
-  letter-spacing: 1px;
+header h1 { margin: 0; font-family: "Playfair Display", serif; font-size: 3rem; }
+header p { margin-top: 10px; font-size: 1.1rem; font-weight: 500; }
+
+nav { background-color: #e3d3b6; display:flex; justify-content:center; gap:20px; padding:12px 10px; position:sticky; top:0; z-index:5; }
+nav a { color:#2a4d69; text-decoration:none; font-weight:600; font-family:"Lora", serif; }
+
+main { max-width:1000px; margin:20px auto; padding:0 16px; }
+
+section { padding:30px 0; border-bottom: 1px solid rgba(0,0,0,0.04); }
+
+.bigConfirmButton {
+  display:inline-block;
+  padding:14px 28px;
+  background:#2a4d69;
+  color:white;
+  text-decoration:none;
+  font-family:"Playfair Display", serif;
+  border-radius:8px;
+  margin-top:20px;
+  font-size:1.2rem;
 }
 
-header p {
-  margin-top: 10px;
-  font-size: 1.25rem;
-  font-weight: 500;
+#rsvpForm input, #rsvpForm select, #rsvpForm textarea {
+  width:100%; padding:12px; margin-top:10px; border-radius:6px; border:1px solid #cfcfcf; font-family:"Lora", serif;
 }
 
-nav {
-  background-color: #e3d3b6;
-  display: flex;
-  justify-content: center;
-  gap: 30px;
-  padding: 14px 0;
-}
+#rsvpForm button { margin-top:14px; padding:14px; width:100%; border-radius:6px; background:#2a4d69; color:white; border:none; font-family:"Playfair Display", serif; font-size:1rem; cursor:pointer; }
 
-nav a {
-  color: #2a4d69;
-  text-decoration: none;
-  font-weight: 600;
-  font-size: 1.05rem;
-  font-family: "Lora", serif;
-}
+.album-buttons { display:flex; gap:12px; margin-top:12px; }
+.albumButton { padding:10px 16px; background:#2a4d69; color:white; border-radius:6px; text-decoration:none; }
 
-section {
-  padding: 50px 20px;
-  max-width: 800px;
-  margin: 0 auto;
-}
+.modal { position:fixed; inset:0; display:flex; align-items:center; justify-content:center; background:rgba(0,0,0,0.4); visibility:hidden; opacity:0; transition:opacity .2s; }
+.modal[aria-hidden="false"] { visibility:visible; opacity:1; }
+.modal-content { background:white; padding:18px; border-radius:8px; max-width:520px; width:92%; position:relative; }
+.close { position:absolute; right:10px; top:8px; border:none; background:none; font-size:18px; cursor:pointer; }
 
-h2 {
-  font-family: "Playfair Display", serif;
-  font-size: 2.2rem;
-  color: #2a4d69;
-  margin-bottom: 25px;
-}
+#adminIcon { position:fixed; right:14px; top:14px; background:#fff; border-radius:8px; padding:8px; border:1px solid #ddd; cursor:pointer; z-index:20; }
 
-#rsvpForm input,
-#rsvpForm select,
-#rsvpForm textarea {
-  width: 100%;
-  padding: 14px;
-  margin-top: 12px;
-  border-radius: 6px;
-  border: 1px solid #b9b9b9;
-  font-size: 16px;
-  font-family: "Lora", serif;
-}
-
-#rsvpForm button {
-  margin-top: 25px;
-  width: 100%;
-  padding: 16px;
-  background-color: #2a4d69;
-  color: #ffffff;
-  border: none;
-  border-radius: 6px;
-  font-size: 1.2rem;
-  font-family: "Playfair Display", serif;
-  cursor: pointer;
-  letter-spacing: 0.5px;
-}
-
-#rsvpForm button:hover {
-  background-color: #1e364b;
-}
-
-.albumButton {
-  display: inline-block;
-  padding: 14px 24px;
-  background-color: #2a4d69;
-  color: #ffffff;
-  border-radius: 6px;
-  text-decoration: none;
-  font-size: 1.2rem;
-  font-family: "Playfair Display", serif;
-}
-
-footer {
-  background-color: #dce6f2;
-  text-align: center;
-  padding: 25px 0;
-  margin-top: 60px;
-  font-family: "Lora", serif;
-}
-
-/* Gifts styles */
-.gifts-container { display:flex; flex-direction:column; gap:14px; margin-top:16px; }
-.gift-item { padding:14px; border-radius:8px; background:#fff; box-shadow:0 1px 3px rgba(0,0,0,0.06); }
+.gifts-container { display:grid; grid-template-columns: repeat(auto-fit, minmax(220px,1fr)); gap:16px; margin-top:16px; }
+.gift-item { padding:14px; border-radius:8px; background:#fff; box-shadow:0 1px 4px rgba(0,0,0,0.06); }
 .gift-item h3 { margin:0 0 6px 0; font-family:"Playfair Display", serif; }
-.gift-item .reserved { font-weight:600; color:#2a4d69; }
-.gift-actions { margin-top:10px; }
+.gift-item p { margin:6px 0; }
 .gift-actions button { padding:8px 12px; border-radius:6px; border:none; cursor:pointer; background:#2a4d69; color:#fff; }
-.gift-actions button:hover { background:#1e364b; }
+
+footer { background:#dce6f2; text-align:center; padding:18px 10px; margin-top:30px; }
+footer a { color:#2a4d69; text-decoration:underline; }
+
+.note { color:#666; font-size:0.95rem; margin-top:8px; }

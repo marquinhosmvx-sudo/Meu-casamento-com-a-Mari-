@@ -1,140 +1,107 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Casamento Marcos & Marieli</title>
-  <!-- Fontes elegantes -->
   <link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;500;600&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css" />
 </head>
-
 <body>
-  <!-- HEADER -->
+  <!-- small admin button top-right -->
+  <button id="adminIcon" title="Admin" aria-label="Admin">⚙️</button>
+
   <header>
-    <h1>Marcos Antônio & Marieli Correa</h1>
+    <h1>Marcos Antônio & Marieli Corrêa</h1>
     <p>16 de Maio de 2026 • 14h15</p>
+    <a class="bigConfirmButton" href="#confirmacao">Confirmar Presença</a>
   </header>
 
-  <!-- MENU -->
   <nav>
     <a href="#sobre">Sobre Nós</a>
     <a href="#cerimonia">Cerimônia</a>
-    <a href="#rsvp">RSVP + Foto</a>
+    <a href="#confirmacao">Confirme sua presença</a>
     <a href="#presentes">Presentes</a>
     <a href="#album">Álbum</a>
+    <a href="Guest_Manual.html" target="_blank">Manual do Convidado</a>
   </nav>
 
-  <!-- SOBRE -->
+  <main>
   <section id="sobre">
     <h2>Nossa História</h2>
-    <p>
-      Com imensa alegria, convidamos você para celebrar conosco este dia tão especial.
-      Cada momento da nossa história foi construído com amor, companheirismo e fé —
-      e agora, queremos compartilhar este capítulo tão importante com você.
-    </p>
+    <p>Com imensa alegria, convidamos você para celebrar conosco este dia tão especial.</p>
   </section>
 
-  <!-- CERIMÔNIA -->
   <section id="cerimonia">
     <h2>Cerimônia & Recepção</h2>
-
-    <p><strong>📅 Data:</strong> 16/05/2026</p>
-    <p><strong>⏰ Horário:</strong> 14h15</p>
-
-    <p><strong>📍 Local da Cerimônia:</strong><br>
-    Av. Planalto, 502-586 — Cidade Jardim Marília, Luziânia — GO</p>
-
-    <p><strong>🎉 Local da Recepção:</strong><br>
-    R3VF+PC Parque Industrial Mingone, Luziânia — GO</p>
+    <p><strong>📅 Data:</strong> 16/05/2026 • <strong>⏰ Horário:</strong> 14h15</p>
+    <p><strong>📍 Cerimônia:</strong> Av. Planalto, 502-586 — Cidade Jardim Marília, Luziânia — GO</p>
+    <p><strong>🎉 Recepção:</strong> R3VF+PC Parque Industrial Mingone, Luziânia — GO</p>
   </section>
 
-  <!-- RSVP -->
-  <section id="rsvp">
-    <h2>Confirmação de Presença + Foto</h2>
+  <!-- Confirm section (main focus) -->
+  <section id="confirmacao">
+    <h2>Confirme sua presença</h2>
+    <p>Estamos felizes com sua presença! Por favor confirme abaixo — opcionalmente deixe uma mensagem carinhosa para os noivos.</p>
 
-    <p>
-      Para tornar tudo ainda mais especial, envie também uma foto sua ou da família 💕  
-      Ela será adicionada ao álbum do casamento.
-    </p>
-
-    <form id="rsvpForm" enctype="multipart/form-data">
-      <input type="text" id="name" placeholder="Nome completo" required />
-      <input type="email" id="email" placeholder="E-mail" required />
-      <input type="tel" id="phone" placeholder="Telefone" required />
-
+    <form id="rsvpForm">
+      <input type="text" id="name" name="name" placeholder="Nome completo" required />
+      <input type="email" id="email" name="email" placeholder="E-mail" required />
+      <input type="tel" id="phone" name="phone" placeholder="Telefone (opcional)" />
       <label for="willAttend">Vai comparecer?</label>
-      <select id="willAttend" required>
+      <select id="willAttend" name="willAttend" required>
         <option value="Sim">Sim</option>
         <option value="Não">Não</option>
       </select>
+      <input type="number" id="guests" name="guests" min="0" value="0" placeholder="Número de acompanhantes" />
+      <textarea id="messageToCouple" name="messageToCouple" placeholder="Mensagem para os noivos (opcional)"></textarea>
 
-      <input type="number" id="guests" min="0" value="0" placeholder="Número de acompanhantes" required />
-
-      <textarea id="notes" placeholder="Observações (opcional)"></textarea>
-
-      <label for="photo">Foto da família ou individual:</label>
-      <input type="file" id="photo" accept="image/*" required />
-
-      <button type="submit">Enviar Confirmação</button>
+      <button type="submit">Confirmar presença</button>
     </form>
 
     <p id="rsvpMessage"></p>
   </section>
 
-  <!-- ADMIN (apenas para você) -->
-  <section id="admin" style="max-width:800px;margin:40px auto;padding:20px;border-radius:8px;background:#fff7ea;">
-    <h2>Admin — Personalizar Fundo</h2>
-
-    <p>Protegido por uma chave simples. Defina uma chave e use-a para desbloquear o painel.</p>
-
-    <label>Chave Admin:</label>
-    <input type="password" id="adminKey" placeholder="Digite a chave de admin" />
-
-    <button id="adminUnlock">Desbloquear</button>
-
-    <div id="adminPanel" style="display:none;margin-top:20px;">
-      <p><strong>1)</strong> Enviar imagem do seu computador (será salva no álbum):</p>
-      <input type="file" id="bgFile" accept="image/*" />
-      <button id="uploadBgBtn">Enviar imagem de fundo</button>
-
-      <hr>
-
-      <p><strong>2)</strong> Ou cole um <em>URL</em> direto de imagem pública:</p>
-      <input type="text" id="bgUrl" placeholder="https://.../imagem.jpg" style="width:100%" />
-      <button id="setBgUrlBtn">Aplicar URL como fundo</button>
-
-      <p style="margin-top:12px;color:#666;font-size:0.95rem;">
-        Atenção: se usar upload, a imagem será armazenada na pasta do álbum e ficará disponível por link público.
-      </p>
-    </div>
-
-    <p id="adminMsg" style="margin-top:12px;color:green"></p>
-  </section>
-
-  <!-- PRESENTES (será substituído dinamicamente pela lista interativa) -->
+  <!-- Presentes -->
   <section id="presentes">
     <h2>Lista de Presentes</h2>
-    <p>Carregando lista de presentes...</p>
+    <p>Escolha um item e reserve para que outras pessoas não comprem o mesmo.</p>
+    <div id="giftsWrapper"><p>Carregando lista de presentes...</p></div>
   </section>
 
-  <!-- ÁLBUM -->
+  <!-- Album -->
   <section id="album">
     <h2>Álbum de Fotos</h2>
-    <p>Veja ou envie fotos do casamento através do link abaixo:</p>
-
-    <a
-      class="albumButton"
-      href="https://drive.google.com/drive/folders/1RhcxrDQdNX6hF_qx4mPU6Ezk05UkVDgK"
-      target="_blank">
-      Abrir Álbum de Fotos
-    </a>
+    <p>Compartilhe e veja fotos do casamento.</p>
+    <div class="album-buttons">
+      <a class="albumButton" id="uploadPhotosBtn" target="_blank" rel="noopener">Enviar fotos</a>
+      <a class="albumButton" id="viewAlbumBtn" target="_blank" rel="noopener">Ver álbum completo</a>
+    </div>
+    <p class="note">Ao enviar fotos via formulário (Google Forms) elas serão adicionadas ao álbum compartilhado.</p>
   </section>
 
-  <!-- FOOTER -->
+  </main>
+
   <footer>
     <p>Com carinho, Marcos & Marieli — 2026</p>
+    <p><a href="Guest_Manual.pdf" target="_blank">Baixar Manual do Convidado (PDF)</a></p>
   </footer>
+
+  <!-- Admin modal (hidden) -->
+  <div id="adminModal" class="modal" aria-hidden="true">
+    <div class="modal-content">
+      <button id="closeAdmin" class="close">✖</button>
+      <h3>Painel Admin — Fundo do site</h3>
+      <p>Envie uma imagem para usar como fundo do cabeçalho (máx 10MB).</p>
+      <input type="file" id="bgFile" accept="image/*" />
+      <button id="uploadBgBtn">Enviar imagem de fundo</button>
+      <hr>
+      <p>Ou cole um URL público de imagem:</p>
+      <input type="text" id="bgUrl" placeholder="https://..." />
+      <button id="setBgUrlBtn">Aplicar e salvar</button>
+      <p id="adminMsg"></p>
+    </div>
+  </div>
 
   <script src="script.js"></script>
 </body>
