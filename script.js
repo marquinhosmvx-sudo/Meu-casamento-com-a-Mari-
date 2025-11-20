@@ -1,5 +1,5 @@
 // ================= CONFIG =================
-const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxlt34Su4OU1k0bXsBBEJ4537jlTPqT-1pvGBfPD8L9HjuCAQVR9J8TGNWUtrz04DMqsA/exec";
+const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxBO-EREQfCGxpXVuCzam3FLF9iMA2_7t5TuYNzYHrm8dTR9osc3sU_TalAzk0aHGV0lg/exec";
 // Altere para a chave que desejar (não compartilhe publicamente)
 const ADMIN_KEY = "minhachave123";
 
